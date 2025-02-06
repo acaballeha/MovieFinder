@@ -13,6 +13,53 @@ import pandas as pd
 from RAG import RAGQA
 import DenseRetriever as DR
 
+queryHistory = []
+
+
+GENRES_IMDB = {
+    28: "Action",
+    12: "Adventure",
+    16: "Animation",
+    35: "Comedy",
+    80: "Crime",
+    99: "Documentary",
+    18: "Drama",
+    10751: "Family",
+    14: "Fantasy",
+    36: "History",
+    27: "Horror",
+    10402: "Music",
+    9648: "Mystery",
+    10749: "Romance",
+    878: "Sci-Fi",
+    10770: "TV Movie",
+    53: "Thriller",
+    10752: "War",
+    37: "Western"
+}
+
+GENRES_IMDB_INVERTED = {
+    "Action": 28,
+    "Adventure": 12,
+    "Animation": 16,
+    "Comedy": 35,
+    "Crime": 80,
+    "Documentary": 99,
+    "Drama": 18,
+    "Family": 10751,
+    "Fantasy": 14,
+    "History": 36,
+    "Horror": 27,
+    "Music": 10402,
+    "Mystery": 9648,
+    "Romance": 10749,
+    "Sci-Fi": 878,
+    "TV Movie": 10770,
+    "Thriller": 53,
+    "War": 10752,
+    "Western": 37
+}
+
 # Función para simular la respuesta del chatbot (por ejemplo, basado en IMDB)
 def chatbot_response(query, genre):
     return f"**Mostrando resultados para la solicitud:** '{query}' **en el género:** '{genre}'."
@@ -93,26 +140,43 @@ def main():
     )
 
     question = st.text_input("Provide a description:", "A man bitten by a spider")
+    topK = st.number_input("Number of near movies:", min_value=1, max_value=10, value=3)
+    selected_genre = None  
+    genre = st.selectbox("Select a genre:", ["All"] + list(GENRES_IMDB.values()))
+    selected_genre = None if genre == "All" else GENRES_IMDB_INVERTED[genre]
+    
+   
     
     if st.button("Guess", key="recommendations_button"):
         # Carga del dataset
-        pathCSV = "./peliculasPopulares10k_CLEAN.csv"
+        pathCSV = "./peliculasPopulares_CLEAN.csv"
         pathEmbeddings = "./imdb_embeddings.npy"
 
+       
+        queryHistory.append(question)
+
+
         # Inicializa el Dense Retriever
-        retriever = DR.DenseRetriever(pathEmbeddings=pathEmbeddings, pathCSV=pathCSV)
-
-        # Inicializa el sistema de QA basado en RAG
-        rag = RAGQA(retriever)
-
+        retriever = DR.DenseRetriever(pathEmbeddings=pathEmbeddings, pathCSV=pathCSV) 
+        rag = RAGQA(retriever)   
+        
+        # Busca las películas más similares    
+        peliculasMatch = rag.denseSearch(question, top_k=topK, genre=selected_genre)
         # Genera la respuesta
-        answer, title, year, adult = rag.generate_answer(question, top_k=1)
-        if adult:
-            adult = "Yes"
-        else:
-            adult = "No"
-        st.write(f"**Movie Title:** {title} **Year:** {year.split('-')[0]} **Adult Only:** {adult}")        
-        st.write(answer)
+        cols = st.columns(3)
+        for idx, movie in enumerate(rag.generate_answer(peliculasMatch)):
+            if len(movie) == 5:
+                resumen, title, year, adult, pathPoster = movie
+                col = idx % 3
+                with cols[col]:
+                    st.image(pathPoster, caption=title)
+                    strWrite = f"**{title}** ({year})"
+                    if adult:
+                        strWrite += " - **Adult content**"
+                    st.markdown(strWrite)
+                    st.markdown(resumen)
+            else:
+                st.warning("Unexpected movie data format.")
 
 
 if __name__ == "__main__":

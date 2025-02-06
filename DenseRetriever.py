@@ -50,20 +50,24 @@ class DenseRetriever:
         print(f"Embeddings guardados en: {path}")
 
 
-    def search(self, query, top_k=5):
-        """
-        Realiza una búsqueda utilizando similitud del coseno.
-        :param query: Texto de búsqueda.
-        :param top_k: Número de resultados a devolver.
-        :return: DataFrame con los resultados ordenados por similitud.
-        """
+    def search(self, query, top_k=5, genre=None):
+      
         print(f"🔍 Buscando: {query}")
+        
+        filtered_df = self.df
+        filtered_embeddings = self.embeddings
+        
+     
+        
+        
 
         # Convertir la query en embedding
         query_embedding = self.model.encode([query], convert_to_numpy=True)
 
         # Calcular similitud del coseno entre la query y los embeddings de las películas
-        similarities = cosine_similarity(query_embedding, self.embeddings)[0]
+        similarities = cosine_similarity(query_embedding, filtered_embeddings)[0]
+        # Multiplicar las similitudes por la popularidad
+       
 
         # Obtener los índices de los mejores resultados
         best_indices = np.argsort(similarities)[::-1][:top_k]

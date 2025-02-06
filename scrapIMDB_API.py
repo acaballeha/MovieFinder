@@ -77,6 +77,19 @@ def obtener_peliculas(n=NUM_PELICULAS):
         if respuesta.status_code == 200:
             datos = respuesta.json()
             peliculas.extend(datos["results"])
+            for pelicula in datos["results"]:
+                poster_path = pelicula.get("poster_path")
+                if poster_path:
+                    poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}"
+                    poster_response = requests.get(poster_url)
+                    if poster_response.status_code == 200:
+                        poster_data = poster_response.content
+                        titulo = pelicula["title"].replace(" ", "_")
+                        año = pelicula["release_date"].split("-")[0]
+                        poster_filename = f"./posters/{titulo}_{año}.jpg"
+                        os.makedirs(os.path.dirname(poster_filename), exist_ok=True)
+                        with open(poster_filename, "wb") as poster_file:
+                            poster_file.write(poster_data)
 
         else:
             print(f"⚠ Error en la petición: {respuesta.status_code}")
