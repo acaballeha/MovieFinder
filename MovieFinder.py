@@ -150,7 +150,7 @@ def main():
             for i, (_, row) in enumerate(resultados.iterrows()):
                 with cols[i % 3]:
                     year = row['release_date'].split('-')[0] if row['release_date'] else "Unknown"
-                    st.markdown(f"***{row['title']}*** {year}")
+                    st.markdown(f"**{row['title']}** {year}")
                     genre_ids = ast.literal_eval(row['genre_ids']) if isinstance(row['genre_ids'], str) else row['genre_ids']
                     generos = ", ".join([GENRES_IMDB.get(genre_id, "Unknown") for genre_id in genre_ids])
                     year = row['release_date'].split('-')[0] if row['release_date'] else "Unknown"

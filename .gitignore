@@ -1,2 +1,4 @@
 #Archivos ignorados por git
 .env
+.devcontainer
+__pycache__
