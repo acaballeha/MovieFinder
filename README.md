@@ -1,4 +1,4 @@
-🎬MovieFinder
+# 🎬MovieFinder
 
 ## Description
 MovieFinder is a dense movie search system for the TMDB database, focusing on showcasing movies with the best ratings. It utilizes advanced algorithms to analyze textual descriptions and retrieve precise, detailed information for each movie.
