@@ -1,3 +1,3 @@
 # Chatbot_IMDB
 
-Este proyecto tiene como objetivo desarrollar un chatbot que permita a los usuarios consultar información sobre películas utilizando descripciones. El chatbot utilizará datos de películas para proporcionar respuestas precisas y relevantes basadas en las consultas de los usuarios. Los usuarios podrán obtener detalles como el título de la película, el director, el elenco, la sinopsis y otros datos importantes simplemente describiendo la película que tienen en mente.
+This project aims to develop a chatbot that allows users to search for movie information using descriptions. The chatbot will utilize movie data to provide accurate and relevant responses based on user queries. Users will be able to obtain details such as the movie title, director, cast, synopsis, and other important information simply by describing the movie they have in mind.
