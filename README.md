@@ -24,11 +24,11 @@ Follow these steps to clone the repository and run the application:
 
 1. Clone the repository:
     ```bash
-    git clone <REPOSITORY_URL>
+    git clone https://github.com/acaballeha/MovieFinder.git
     ```
 2. Navigate to the project directory:
     ```bash
-    cd <REPOSITORY_NAME>
+    cd MovieFinder
     ```
 3. Install the necessary dependencies:
     ```bash
